@@ -1,7 +1,9 @@
 {
     "name": "alexanderschranz/jackalope-xml-delete-properties",
     "require": {
-        "jackalope/jackalope-doctrine-dbal": "^1.10"
+        "php": "^8.1",
+        "jackalope/jackalope-doctrine-dbal": "^1.10",
+        "phpcr/phpcr-utils": "^1.8"
     },
     "autoload": {
         "psr-4": {
