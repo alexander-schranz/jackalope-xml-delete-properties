@@ -31,6 +31,13 @@ Run on a MacBook Pro (16", 2021) Apple M1 Pro 32 GB:
 `legacy`: is the `1.9.0` version: https://github.com/jackalope/jackalope-doctrine-dbal/blob/f7b286f388e0d3a42497c29e597756d6e346fea5/src/Jackalope/Transport/DoctrineDBAL/Client.php#L1804
 `single_dom_document`: should represent the state of `2.0.0-beta2` version after: https://github.com/jackalope/jackalope-doctrine-dbal/pull/423/files
 
+**Blackfire**
+
+I did not use Blackfire for benchmarking as it did show in past benchmark where `xml_parse`
+can not be good profiled as having a lot of callback method being called via `xml_set_element_handler` and `xml_set_character_data_handler`.
+So profiling takes more time as processing things as Blackfire need to log every method call.
+Instead I depend on running real examples.
+
 ### Required changes for improvements
 
 #### A: Group Properties
@@ -67,3 +74,9 @@ The queries are currently ignored in the benchmark as it is focused on XML manip
 DOMDocument is bad for performance and should be avoided.
 The `xml_parse` as it allows us to streamed reading the xml and skip the properties which we want to remove.
 The [`XmlPropsRemover`](src/XmlPropsRemover.php) is an example how this could be done.
+
+#### D: TODO
+
+ - [ ] xml_parse escape attributes name correctly
+ - [ ] xml_parse escape attributes value correctly
+ - [ ] xml_parse data content correctly
