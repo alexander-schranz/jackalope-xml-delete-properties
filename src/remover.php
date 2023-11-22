@@ -7,8 +7,8 @@ use PHPCR\PropertyType;
 use PHPCR\RepositoryException;
 use PHPCR\Util\PathHelper;
 
-$xml = \file_get_contents(__DIR__ . '/../var/homepage.xml');
-$props = \explode("\n", \file_get_contents(__DIR__ . '/../var/homepage-props.csv'));
+$xml = \file_get_contents(__DIR__ . '/../var/props.xml');
+$props = \explode("\n", \file_get_contents(__DIR__ . '/../var/props.csv'));
 
 $deletePropertyPaths = [];
 foreach ($props as $prop) {
@@ -75,14 +75,14 @@ function deleteProperty(string $xml, string $path) {
     return [$dom->saveXML(), $queries];
 }
 
-function deleteProperties(string $xml, array $deletePropertyPaths): void {
+function deleteProperties(string $xml, array $deletePropertyPaths): string {
     foreach ($deletePropertyPaths as $path) {
         [$xml, $queries] = deleteProperty($xml, $path);
 
         echo $path . ' ' . \count($queries) . PHP_EOL;
     }
 
-    \file_put_contents(__DIR__ . '/../var/cache.xml');
+    return $xml;
 }
 
 // ---------- End Legacy ----------
@@ -135,7 +135,7 @@ function deletePropertiesSingleDOMDocument(string $xml, array $paths) {
     return $dom->saveXML();
 }
 
-function deleteSingleDOMDocument(string $xml, array $deletePropertyPaths): void {
+function deleteSingleDOMDocument(string $xml, array $deletePropertyPaths): string {
     $nodes = groupByNode($deletePropertyPaths);
     \assert(\count($nodes) === 1); // expect currently always one node
 
@@ -143,7 +143,7 @@ function deleteSingleDOMDocument(string $xml, array $deletePropertyPaths): void 
         $xml = deletePropertiesSingleDOMDocument($xml, $paths);
     }
 
-    \file_put_contents(__DIR__ . '/../var/cache.xml', $xml);
+    return $xml;
 }
 
 // ---------- End Single DOMDocument ----------
@@ -205,7 +205,7 @@ function deletePropertiesSingleDOMQuery(string $xml, array $paths) {
     return $dom->saveXML();
 }
 
-function deleteSingleDOMQuery(string $xml, array $deletePropertyPaths): void {
+function deleteSingleDOMQuery(string $xml, array $deletePropertyPaths): string {
     $nodes = groupByNode($deletePropertyPaths);
     \assert(\count($nodes) === 1); // expect currently always one node
 
@@ -213,7 +213,7 @@ function deleteSingleDOMQuery(string $xml, array $deletePropertyPaths): void {
         $xml = deletePropertiesSingleDOMQuery($xml, $paths);
     }
 
-    \file_put_contents(__DIR__ . '/../var/cache.xml', $xml);
+    return $xml;
 }
 
 // ---------- End Single DOMDocument ----------
@@ -276,7 +276,7 @@ function deletePropertiesSingleDOMQueryChunk(string $xml, array $paths) {
     return $dom->saveXML();
 }
 
-function deleteSingleDOMQueryChunk(string $xml, array $deletePropertyPaths): void {
+function deleteSingleDOMQueryChunk(string $xml, array $deletePropertyPaths): string {
     $nodes = groupByNode($deletePropertyPaths);
     \assert(\count($nodes) === 1); // expect currently always one node
 
@@ -284,28 +284,38 @@ function deleteSingleDOMQueryChunk(string $xml, array $deletePropertyPaths): voi
         $xml = deletePropertiesSingleDOMQueryChunk($xml, $paths);
     }
 
-    \file_put_contents(__DIR__ . '/../var/cache.xml', $xml);
+    return $xml;
 }
 
 // ---------- End Single DOMDocument ----------
+$now = time();
 
 switch ($argv[1] ?? 'legacy') {
     case 'legacy':
         // 6m 24s
-        deleteProperties($xml, $deletePropertyPaths);
+        $updatedXml = deleteProperties($xml, $deletePropertyPaths);
         break;
     case 'single_dom_document':
         // 2m 25s
-        deleteSingleDOMDocument($xml, $deletePropertyPaths);
+        $updatedXml = deleteSingleDOMDocument($xml, $deletePropertyPaths);
         break;
     case 'single_dom_query':
         // 1m 28s
-        deleteSingleDOMQuery($xml, $deletePropertyPaths);
+        $updatedXml = deleteSingleDOMQuery($xml, $deletePropertyPaths);
         break;
     case 'single_dom_query_chunk':
         // 1m 28s (250 Chunks)
         // 1m 28s (100 Chunks)
         // 1m 33s (10 Chunks)
-        deleteSingleDOMQueryChunk($xml, $deletePropertyPaths);
+        $updatedXml = deleteSingleDOMQueryChunk($xml, $deletePropertyPaths);
         break;
+    default:
+        throw new \InvalidArgumentException('Invalid argument: ' . $argv[1]);
 }
+
+\file_put_contents(__DIR__ . '/../var/cache.xml', $updatedXml);
+
+echo PHP_EOL;
+
+echo 'Time: ' . (time() - $now) . 's' . PHP_EOL;
+echo 'Memory: ' . \memory_get_peak_usage(true) / 1024 / 1024 . ' MB' . PHP_EOL;
