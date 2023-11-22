@@ -86,9 +86,18 @@ The [`XmlPropsRemover`](src/XmlPropsRemover.php) is an example how this could be
     - [x] self closing tags
     - [x] escape data
 
-currently there is a little difference in the 2 printed xmls:
+~~currently there is a little difference in the 2 printed xmls:~~
 
 ```
 -rw-r--r--   1 staff  staff  11940901 22 Nov 23:38 removed_legacy.xml
 -rw-r--r--   1 staff  staff  12002548 22 Nov 23:39 removed_xml_parse.xml
+```
+
+Update `xml_parse` variant now has the same output as the previous DOMDocument version:
+
+```
+-rw-r--r--   1 alexanderschranz  staff  11940901 22 Nov 23:33 removed_legacy.xml
+-rw-r--r--   1 alexanderschranz  staff  11940901 23 Nov 00:18 removed_xml_parse.xml
+-rw-r--r--   1 alexanderschranz  staff  12009559 22 Nov 23:45 removed_legacy_pretty.xml
+-rw-r--r--   1 alexanderschranz  staff  12009559 23 Nov 00:18 removed_xml_parse_pretty.xml
 ```
