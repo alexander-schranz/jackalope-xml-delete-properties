@@ -305,6 +305,8 @@ function deleteXmlParse(string $xml, array $deletePropertyPaths): string {
 }
 // ---------- End Single DOMQuery Chunk ----------
 
+$beforePropertyCount = \substr_count($xml, '<sv:property');
+
 $now = time();
 
 switch ($argv[1] ?? 'legacy') {
@@ -336,9 +338,12 @@ switch ($argv[1] ?? 'legacy') {
         throw new \InvalidArgumentException('Invalid argument: ' . $argv[1]);
 }
 
+$afterPropertyCount = \substr_count($updatedXml, '<sv:property');
 \file_put_contents(__DIR__ . '/../var/cache.xml', $updatedXml);
 
 echo PHP_EOL;
 
+echo 'Properties Count before: ' . $beforePropertyCount . PHP_EOL;
+echo 'Properties Count after: ' . $afterPropertyCount . PHP_EOL;
 echo 'Time: ' . (time() - $now) . 's' . PHP_EOL;
 echo 'Memory: ' . \memory_get_peak_usage(true) / 1024 / 1024 . ' MB' . PHP_EOL;
