@@ -309,7 +309,9 @@ $beforePropertyCount = \substr_count($xml, '<sv:property');
 
 $now = time();
 
-switch ($argv[1] ?? 'legacy') {
+$handler = $argv[1] ?? 'legacy';
+
+switch ($handler) {
     case 'legacy':
         // 6m 24s
         $updatedXml = deleteProperties($xml, $deletePropertyPaths);
@@ -339,7 +341,7 @@ switch ($argv[1] ?? 'legacy') {
 }
 
 $afterPropertyCount = \substr_count($updatedXml, '<sv:property');
-\file_put_contents(__DIR__ . '/../var/cache.xml', $updatedXml);
+\file_put_contents(__DIR__ . '/../var/removed_' . $handler . '.xml', $updatedXml);
 
 echo PHP_EOL;
 
