@@ -12,6 +12,7 @@ php src/remover.php legacy
 php src/remover.php single_dom_document
 php src/remover.php single_dom_query
 php src/remover.php single_dom_query_chunk
+php src/remover.php xml_parse
 ```
 
 ## Results
