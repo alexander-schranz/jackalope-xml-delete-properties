@@ -216,7 +216,7 @@ function deleteSingleDOMQuery(string $xml, array $deletePropertyPaths): string {
     return $xml;
 }
 
-// ---------- End Single DOMDocument ----------
+// ---------- End Single DOMQuery ----------
 
 // ---------- Start Single DOMQuery Chunk ----------
 function deletePropertiesSingleDOMQueryChunk(string $xml, array $paths) {
@@ -286,8 +286,8 @@ function deleteSingleDOMQueryChunk(string $xml, array $deletePropertyPaths): str
 
     return $xml;
 }
+// ---------- End Single DOMQuery Chunk ----------
 
-// ---------- End Single DOMDocument ----------
 $now = time();
 
 switch ($argv[1] ?? 'legacy') {
