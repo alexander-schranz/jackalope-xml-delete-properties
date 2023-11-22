@@ -342,6 +342,7 @@ switch ($handler) {
 
 $afterPropertyCount = \substr_count($updatedXml, '<sv:property');
 \file_put_contents(__DIR__ . '/../var/removed_' . $handler . '.xml', $updatedXml);
+\file_put_contents(__DIR__ . '/../var/removed_' . $handler . '_pretty.xml', \str_replace('</sv:property>', '</sv:property>' . PHP_EOL, $updatedXml));
 
 echo PHP_EOL;
 

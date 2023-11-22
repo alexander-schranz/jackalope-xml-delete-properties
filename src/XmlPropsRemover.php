@@ -36,7 +36,7 @@ class XmlPropsRemover
      */
     public function removeProps(): string
     {
-        $this->newXml = '<?xml version="1.0" encoding="UTF-8"?>';
+        $this->newXml = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
         $this->skipCurrentTag = false;
 
         $parser = xml_parser_create();
