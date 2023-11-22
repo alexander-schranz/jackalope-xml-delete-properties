@@ -85,6 +85,8 @@ class XmlPropsRemover
         $tag .= '>';
 
         $this->newXml .= $tag;
+
+        // TODO removed weakreferences and references need to be returned
     }
 
 

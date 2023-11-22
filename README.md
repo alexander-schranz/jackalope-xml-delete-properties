@@ -81,3 +81,4 @@ The [`XmlPropsRemover`](src/XmlPropsRemover.php) is an example how this could be
  - [ ] xml_parse escape attributes name correctly
  - [ ] xml_parse escape attributes value correctly
  - [ ] xml_parse data content correctly
+ - [ ] xml_parse add queries to remove references
