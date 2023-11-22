@@ -288,6 +288,23 @@ function deleteSingleDOMQueryChunk(string $xml, array $deletePropertyPaths): str
 }
 // ---------- End Single DOMQuery Chunk ----------
 
+// ---------- Start XML Parse ----------
+
+function deleteXmlParse(string $xml, array $deletePropertyPaths): string {
+    $nodes = groupByNode($deletePropertyPaths);
+    \assert(\count($nodes) === 1); // expect currently always one node
+
+    foreach ($nodes as $node => $paths) {
+        $props = \array_keys($paths);
+        $xmlPropsRemover = new \App\XmlPropsRemover($xml, $props);
+
+        $xml = $xmlPropsRemover->removeProps();
+    }
+
+    return $xml;
+}
+// ---------- End Single DOMQuery Chunk ----------
+
 $now = time();
 
 switch ($argv[1] ?? 'legacy') {
@@ -308,6 +325,12 @@ switch ($argv[1] ?? 'legacy') {
         // 1m 28s (100 Chunks)
         // 1m 33s (10 Chunks)
         $updatedXml = deleteSingleDOMQueryChunk($xml, $deletePropertyPaths);
+        break;
+    case 'xml_parse':
+        // 1m 28s (250 Chunks)
+        // 1m 28s (100 Chunks)
+        // 1m 33s (10 Chunks)
+        $updatedXml = deleteXmlParse($xml, $deletePropertyPaths);
         break;
     default:
         throw new \InvalidArgumentException('Invalid argument: ' . $argv[1]);

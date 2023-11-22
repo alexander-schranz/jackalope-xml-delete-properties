@@ -24,8 +24,9 @@ Run on a MacBook Pro (16", 2021) Apple M1 Pro 32 GB:
 |------------------------|--------|--------|
 | legacy                 | 6m 29s | 48 MB  |
 | single_dom_document    | 2m 25s | 35 MB  |
-| single_dom_query       | 1m 30  | 37 MB  |
-| single_dom_query_chunk | 1m 29  | 35 MB  |
+| single_dom_query       | 1m 30s | 37 MB  |
+| single_dom_query_chunk | 1m 29s | 35 MB  |
+| xml_parse              | ~1s    | 35 MB  |
 
 `legacy`: is the `1.9.0` version: https://github.com/jackalope/jackalope-doctrine-dbal/blob/f7b286f388e0d3a42497c29e597756d6e346fea5/src/Jackalope/Transport/DoctrineDBAL/Client.php#L1804
 `single_dom_document`: should represent the state of `2.0.0-beta2` version after: https://github.com/jackalope/jackalope-doctrine-dbal/pull/423/files
@@ -60,3 +61,9 @@ The `queries` to remove references should also be grouped and best a single quer
 instead of one query per reference.
 
 The queries are currently ignored in the benchmark as it is focused on XML manipulation.
+
+#### C: Replace DOMDocument with xml_parse
+
+DOMDocument is bad for performance and should be avoided.
+The `xml_parse` as it allows us to streamed reading the xml and skip the properties which we want to remove.
+The [`XmlPropsRemover`](src/XmlPropsRemover.php) is an example how this could be done.
