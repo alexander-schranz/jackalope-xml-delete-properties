@@ -82,3 +82,11 @@ The [`XmlPropsRemover`](src/XmlPropsRemover.php) is an example how this could be
  - [ ] xml_parse escape attributes value correctly
  - [ ] xml_parse data content correctly
  - [ ] xml_parse add queries to remove references
+ - [ ] xml_parse make sure the output is the same as for DOMDocument
+
+currently there is a little difference in the 2 printed xmls:
+
+```
+-rw-r--r--   1 staff  staff  11940901 22 Nov 23:38 removed_legacy.xml
+-rw-r--r--   1 staff  staff  12002548 22 Nov 23:39 removed_xml_parse.xml
+```
