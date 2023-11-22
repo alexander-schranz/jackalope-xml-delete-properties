@@ -24,6 +24,10 @@ class XmlPropsRemover
      */
     private $newXml = '';
 
+    /**
+     * @var string
+     */
+    private $newStartTag = '';
 
     public function __construct(string $xml, array $propertyNames)
     {
@@ -37,6 +41,7 @@ class XmlPropsRemover
     public function removeProps(): string
     {
         $this->newXml = '<?xml version="1.0" encoding="UTF-8"?>' . PHP_EOL;
+        $this->newStartTag = '';
         $this->skipCurrentTag = false;
 
         $parser = xml_parser_create();
@@ -54,7 +59,7 @@ class XmlPropsRemover
         // avoid memory leaks and unset the parser see: https://www.php.net/manual/de/function.xml-parser-free.php
         unset($parser);
 
-        return $this->newXml;
+        return $this->newXml . PHP_EOL;
     }
 
     /**
@@ -74,6 +79,8 @@ class XmlPropsRemover
             if (\in_array($svName, $this->propertyNames)) {
                 $this->skipCurrentTag = true;
 
+                assert($this->newStartTag === '');
+
                 echo $svName . ' ' . \count([] /* TODO queries */) . PHP_EOL;
 
                 return;
@@ -86,16 +93,31 @@ class XmlPropsRemover
         }
         $tag .= '>';
 
-        $this->newXml .= $tag;
-
         // TODO removed weakreferences and references need to be returned
-    }
 
+        $this->newXml .= $this->newStartTag;
+        $this->newStartTag = $tag; // handling self closing tags in endHandler
+    }
 
     private function endHandler($parser, $name): void
     {
         if ($name === 'SV:PROPERTY' && $this->skipCurrentTag) {
             $this->skipCurrentTag = false;
+
+            assert($this->newStartTag === '');
+
+            return;
+        }
+
+        if ($this->skipCurrentTag) {
+            assert($this->newStartTag === '');
+            return;
+        }
+
+        if ($this->newStartTag) {
+            // if the tag is not rendered to newXml it can be a self closing tag
+            $this->newXml .= \substr($this->newStartTag, 0.0, -1) . '/>';
+            $this->newStartTag = '';
 
             return;
         }
@@ -106,9 +128,15 @@ class XmlPropsRemover
     private function dataHandler($parser, $data): void
     {
         if ($this->skipCurrentTag) {
-            $this->skipCurrentTag = false;
+            assert($this->newStartTag === '');
+
+            return;
         }
 
-        $this->newXml .= $data;  // TODO escaping
+        if ($data !== '') {
+            $this->newXml .= $this->newStartTag; // none empty data means no self closing tag so render tag now
+            $this->newStartTag = '';
+            $this->newXml .= htmlspecialchars($data, ENT_XML1);
+        }
     }
 }
