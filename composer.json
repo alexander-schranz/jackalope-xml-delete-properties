@@ -1,0 +1,17 @@
+{
+    "name": "alexanderschranz/jackalope-xml-delete-properties",
+    "require": {
+        "jackalope/jackalope-doctrine-dbal": "^1.10"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Alexander Schranz",
+            "email": "alexander@sulu.io"
+        }
+    ]
+}
