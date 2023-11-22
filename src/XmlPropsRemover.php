@@ -74,6 +74,8 @@ class XmlPropsRemover
             if (\in_array($svName, $this->propertyNames)) {
                 $this->skipCurrentTag = true;
 
+                echo $svName . ' ' . \count([] /* TODO queries */) . PHP_EOL;
+
                 return;
             }
         }
