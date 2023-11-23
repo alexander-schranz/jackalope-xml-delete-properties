@@ -37,7 +37,7 @@ Run on a MacBook Pro (16", 2021) Apple M1 Pro 32 GB:
 I did not use Blackfire for benchmarking as it did show in past benchmark where `xml_parse`
 can not be good profiled as having a lot of callback method being called via `xml_set_element_handler` and `xml_set_character_data_handler`.
 So profiling takes more time as processing things as Blackfire need to log every method call.
-Instead I depend on running real examples.
+Instead I depend on classic benchmarking via time() and memory_get_peak_usage(true) measures.
 
 ### Required changes for improvements
 
@@ -96,8 +96,8 @@ The [`XmlPropsRemover`](src/XmlPropsRemover.php) is an example how this could be
 Update `xml_parse` variant now has the same output as the previous DOMDocument version:
 
 ```
--rw-r--r--   1 alexanderschranz  staff  11940901 22 Nov 23:33 removed_legacy.xml
--rw-r--r--   1 alexanderschranz  staff  11940901 23 Nov 00:18 removed_xml_parse.xml
--rw-r--r--   1 alexanderschranz  staff  12009559 22 Nov 23:45 removed_legacy_pretty.xml
--rw-r--r--   1 alexanderschranz  staff  12009559 23 Nov 00:18 removed_xml_parse_pretty.xml
+-rw-r--r--   1 staff  staff  11940901 22 Nov 23:33 removed_legacy.xml
+-rw-r--r--   1 staff  staff  11940901 23 Nov 00:18 removed_xml_parse.xml
+-rw-r--r--   1 staff  staff  12009559 22 Nov 23:45 removed_legacy_pretty.xml
+-rw-r--r--   1 staff  staff  12009559 23 Nov 00:18 removed_xml_parse_pretty.xml
 ```
