@@ -29,6 +29,16 @@ class XmlPropsRemover
      */
     private $newStartTag = '';
 
+    /**
+     * @var string[]
+     */
+    private $references = [];
+
+    /**
+     * @var string[]
+     */
+    private $weakReferences = [];
+
     public function __construct(string $xml, array $propertyNames)
     {
         $this->xml = $xml;
@@ -77,11 +87,15 @@ class XmlPropsRemover
             $svName = $attrs['SV:NAME'];
 
             if (\in_array($svName, $this->propertyNames)) {
-                $this->skipCurrentTag = true;
-
                 assert($this->newStartTag === '');
+                $this->skipCurrentTag = true;
+                $svType = $attrs['SV:TYPE'];
 
-                echo $svName . ' ' . \count([] /* TODO queries */) . PHP_EOL;
+                if ($svType === 'reference') {
+                    $this->references[] = $svName;
+                } elseif ($svType === 'weakreference') {
+                    $this->weakReferences[] = $svName;
+                }
 
                 return;
             }
@@ -89,11 +103,12 @@ class XmlPropsRemover
 
         $tag = '<' . \strtolower($name);
         foreach ($attrs as $key => $value) {
-            $tag .= ' ' . \strtolower($key) . '="' . $value . '"'; // TODO escaping
+            $tag .= ' ' . \strtolower($key) // there is no case key which requires escaping for performance reasons we avoid it so
+                . '="'
+                . \htmlspecialchars($value, ENT_COMPAT, 'UTF-8')
+                . '"';
         }
         $tag .= '>';
-
-        // TODO removed weakreferences and references need to be returned
 
         $this->newXml .= $this->newStartTag;
         $this->newStartTag = $tag; // handling self closing tags in endHandler
@@ -136,7 +151,8 @@ class XmlPropsRemover
         if ($data !== '') {
             $this->newXml .= $this->newStartTag; // none empty data means no self closing tag so render tag now
             $this->newStartTag = '';
-            $this->newXml .= htmlspecialchars($data, ENT_XML1);
+
+            $this->newXml .= htmlspecialchars($data, ENT_XML1, 'UTF-8');
         }
     }
 }
