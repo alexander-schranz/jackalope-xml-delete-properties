@@ -78,11 +78,11 @@ The [`XmlPropsRemover`](src/XmlPropsRemover.php) is an example how this could be
 
 #### D: TODO
 
- - [ ] xml_parse escape attributes name correctly
- - [ ] xml_parse escape attributes value correctly
+ - [x] xml_parse escape attributes name correctly
+ - [x] xml_parse escape attributes value correctly
  - [x] xml_parse data content correctly
- - [ ] xml_parse add queries to remove references
- - [ ] xml_parse make sure the output is the same as for DOMDocument
+ - [ ] xml_parse add queries to remove references (is for all the same so it should not matter)
+ - [x] xml_parse make sure the output is the same as for DOMDocument
     - [x] self closing tags
     - [x] escape data
 
